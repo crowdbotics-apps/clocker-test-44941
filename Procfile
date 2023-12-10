@@ -1,1 +1,1 @@
-web: node app.js
+clock: npm start
