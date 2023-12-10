@@ -1,34 +1,25 @@
-# Use Heroku-22 stack with buildpacks for Ruby and Node.js
-FROM heroku/heroku:22
-# Install Python 2 (python2 package)
+FROM timbru31/ruby-node:3.1
+
+# Install Python 2
 RUN apt-get update && apt-get install -y python2
 
-# Set Python 2 as the default Python version if necessary
+# If 'python' symbolic link exists, remove it
+RUN if [ -f /usr/bin/python ]; then rm /usr/bin/python; fi
+
+# Create a symbolic link to python2
 RUN ln -s /usr/bin/python2 /usr/bin/python
 
-# Set working directory
-WORKDIR /app/clockapp/
+# Continue with your existing setup
+WORKDIR /app/webapp/
 
-# Install necessary dependencies for Ruby and Node.js
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get install -y build-essential && \
-    apt-get install -y ruby-full
+RUN gem update bundler
+COPY Gemfile Gemfile.lock /app/webapp/
+RUN bundle install
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json /app/clockapp/
+COPY package.json package-lock.json /app/webapp/
 RUN npm install
 
-# Copy Gemfile and Gemfile.lock and install Ruby dependencies
-COPY Gemfile Gemfile.lock /app/clockapp/
-RUN gem update --system && \
-    gem install bundler && \
-    bundle install
+COPY . /app/webapp/
 
-# Copy the rest of the application files
-COPY . /app/clockapp/
-
-# Specify the command to start the clock app
 CMD ["npm", "start"]
+
