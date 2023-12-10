@@ -1,13 +1,19 @@
+# Start from the base image
 FROM timbru31/ruby-node:3.1
 
-# Install Python 2
-RUN apt-get update && apt-get install -y python2
-
-# If 'python' symbolic link exists, remove it
-RUN if [ -f /usr/bin/python ]; then rm /usr/bin/python; fi
+# Install Python 2 from an alternative source
+RUN apt-get update && apt-get install -y wget gnupg2
+RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz && \
+    tar -xvf Python-2.7.18.tgz && \
+    cd Python-2.7.18 && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf Python-2.7.18*
 
 # Create a symbolic link to python2
-RUN ln -s /usr/bin/python2 /usr/bin/python
+RUN ln -s /usr/local/bin/python2.7 /usr/bin/python
 
 # Continue with your existing setup
 WORKDIR /app/webapp/
@@ -22,4 +28,3 @@ RUN npm install
 COPY . /app/webapp/
 
 CMD ["npm", "start"]
-
