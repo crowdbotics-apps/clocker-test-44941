@@ -1,12 +1,29 @@
+# Use Heroku-22 stack with buildpacks for Ruby and Node.js
+FROM heroku/heroku:22
 
-FROM alpine:3.10
+# Set working directory
+WORKDIR /app/clockapp/
 
-# Install system dependencies
-RUN apk add --no-cache --update   bash   gcc   g++   make   python2   python2-dev   py2-pip   musl-dev   postgresql-dev   git   nodejs   nodejs-npm
+# Install necessary dependencies for Ruby and Node.js
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get install -y build-essential && \
+    apt-get install -y ruby-full
 
-ADD ./ /app/webapp/
-WORKDIR /app/webapp/
+# Copy package files and install dependencies
+COPY package.json package-lock.json /app/clockapp/
 RUN npm install
-RUN adduser -D myuser
-USER myuser
+
+# Copy Gemfile and Gemfile.lock and install Ruby dependencies
+COPY Gemfile Gemfile.lock /app/clockapp/
+RUN gem update --system && \
+    gem install bundler && \
+    bundle install
+
+# Copy the rest of the application files
+COPY . /app/clockapp/
+
+# Specify the command to start the clock app
 CMD ["npm", "start"]
