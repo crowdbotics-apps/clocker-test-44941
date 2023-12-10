@@ -1,5 +1,10 @@
 # Use Heroku-22 stack with buildpacks for Ruby and Node.js
 FROM heroku/heroku:22
+# Install Python 2 (python2 package)
+RUN apt-get update && apt-get install -y python2
+
+# Set Python 2 as the default Python version if necessary
+RUN ln -s /usr/bin/python2 /usr/bin/python
 
 # Set working directory
 WORKDIR /app/clockapp/
