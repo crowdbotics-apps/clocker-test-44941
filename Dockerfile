@@ -1,14 +1,15 @@
 # Start from the base image
 FROM timbru31/ruby-node:3.3-slim-hydrogen
 
-# Install Python 2 from an alternative source
-RUN apt-get update && apt-get install -y wget gnupg2
+# Install Python 3
 RUN apt-get update && \
     apt-get install -y python3
 
+# Remove the symbolic link to python2
+RUN rm /usr/bin/python
 
-# Create a symbolic link to python2
-RUN ln -s /usr/local/bin/python2.7 /usr/bin/python
+# Create a symbolic link to python3
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Continue with your existing setup
 WORKDIR /app/webapp/
@@ -23,3 +24,4 @@ RUN npm install
 COPY . /app/webapp/
 
 CMD ["npm", "start"]
+
