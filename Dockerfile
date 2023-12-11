@@ -15,10 +15,10 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 WORKDIR /app/webapp/
 
 # Update Bundler to the version specified in your lockfile
-RUN gem install bundler -v 1.17.2
+RUN gem install bundler -v 1.17.3
 
 COPY Gemfile Gemfile.lock /app/webapp/
-RUN bundle _1.17.2_ install
+RUN bundle _1.17.3_ install
 
 COPY package.json package-lock.json /app/webapp/
 RUN npm install
