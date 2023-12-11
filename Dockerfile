@@ -1,5 +1,5 @@
 # Start from the base image
-FROM timbru31/ruby-node:3.1
+FROM timbru31/ruby-node:3.3-slim-hydrogen
 
 # Install Python 2 from an alternative source
 RUN apt-get update && apt-get install -y wget gnupg2
