@@ -5,8 +5,8 @@ FROM timbru31/ruby-node:3.3-slim-hydrogen
 RUN apt-get update && \
     apt-get install -y python3
 
-# Remove the symbolic link to python2
-RUN rm /usr/bin/python
+# Check if '/usr/bin/python' exists before removing it
+RUN if [ -f /usr/bin/python ]; then rm /usr/bin/python; fi
 
 # Create a symbolic link to python3
 RUN ln -s /usr/bin/python3 /usr/bin/python
@@ -24,4 +24,3 @@ RUN npm install
 COPY . /app/webapp/
 
 CMD ["npm", "start"]
-
